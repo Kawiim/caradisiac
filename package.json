@@ -21,6 +21,8 @@
   "homepage": "https://github.com/Kawiim/caradisiac#readme",
   "dependencies": {
     "elasticsearch": "^14.2.0",
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "node-car-api": "github:92bondstreet/node-car-api",
+    "p-settle": "^2.0.0"
   }
 }
