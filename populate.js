@@ -9,32 +9,37 @@ var client = new elasticsearch.Client({
 });
 
 
-function pushToElastic(model, count) {
-	client.bulk({
-		body: [
-			{ index:  { _index: 'cars', _type: 'car', _id: count } },
-			model
-		]
-	}, function (err, resp) {
-		console.log(err)
-	});
+function pushToElastic(model) {
+	client.create({
+        index: 'cars',
+        type: 'car',
+        id: model.uuid,
+        body: model
+      }, function (error, response) {
+        if(error)
+        {
+          console.log(error);
+        }
+    });
 }
 
+async function getBrandsList() {
+	var brandsList = await getBrands()
+	return brandsList;
+}
 
 module.exports = {
 
 	startPopulate : async function() {
-		var count = 0
-		const brands = await getBrands();
-		
-		brands.forEach(async function(brand){
-			const models = await getModels(brand);
-			models.forEach(function(model){
-				pushToElastic(model, count++)
+
+		getBrandsList().then((brands) => {
+			brands.forEach(async function(brand){
+				const models = await getModels(brand);
+				models.forEach(function(model){
+					pushToElastic(model)
+				})
+				
 			})
-			
-		})
+		})	
 	}
-
-
 }
